@@ -13,6 +13,20 @@ class RutEntregaController extends Controller
     public function index()
     {
         //
+        //Con base a la relaccion veo los detalles de la ruta y los puntos de entrega
+        try {
+            $stops= PuntosEntrega::with('ruta')->get();
+            //Retornar un mensaje json
+            return response()->json([
+                'message' => 'Lista de puntos de entrega',
+                'data' => $stops
+            ]);
+        } catch (\Exception $e) {
+            // Retornar un mensaje de error
+            return response()->json([
+                'error' => 'Error al obtener los puntos de entrega'
+            ], 500);
+        }
     }
 
     /**
