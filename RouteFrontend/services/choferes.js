@@ -54,6 +54,17 @@ async function deleteDrivers(IDCHOFER) {
     }
 }
 
+
+
+// Llenar formulario para editar
+function updateDrivers(id, nombre, telefono) {
+    document.getElementById("chofer-id").value = id;
+    document.getElementById("chofer-nombre").value = nombre;
+    document.getElementById("chofer-telefono").value = telefono;
+    document.getElementById("chofer-submit").textContent = "Actualizar Registro";
+}
+
+
 // Renderizar tabla de choferes y formulario
 function renderList(data) {
     const container = document.getElementById("data-container");
@@ -88,7 +99,7 @@ function renderList(data) {
                 <td>${item.NOMBRE}</td>
                 <td>${item.TELEFONO}</td>
                 <td>
-                    <button class="btn btn-sm btn-warning" onclick="editDrivers(${item.IDCHOFER}, '${item.NOMBRE}', '${item.TELEFONO}')">Editar</button>
+                    <button class="btn btn-sm btn-warning" onclick="updateDrivers(${item.IDCHOFER}, '${item.NOMBRE}', '${item.TELEFONO}')">Editar</button>
                     <button class="btn btn-sm btn-danger" onclick="deleteDrivers(${item.IDCHOFER})">Eliminar</button>
                 </td>
             </tr>
@@ -116,13 +127,6 @@ function renderList(data) {
     };
 }
 
-// Llenar formulario para editar
-function editChofer(id, nombre, telefono) {
-    document.getElementById("chofer-id").value = id;
-    document.getElementById("chofer-nombre").value = nombre;
-    document.getElementById("chofer-telefono").value = telefono;
-    document.getElementById("chofer-submit").textContent = "Actualizar Registro";
-}
 
 // Mostrar choferes al cargar
 window.onload = getDrivers;
