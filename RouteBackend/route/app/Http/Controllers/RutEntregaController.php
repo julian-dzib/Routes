@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PuntosEntrega;
+use App\Models\Rutas;
 class RutEntregaController extends Controller
 {
     /**
@@ -26,19 +27,26 @@ class RutEntregaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, $idRoute)
     {
         //Validar los datos de entrada
         $request->validate([
-            "IDRUTAS" => "required|integer|exists:rutas,IDRUTAS",
             "DIRECCION" => "required|string",
             "ORDEN" => "required|integer",
             "ENTREGADO" => "boolean|required",
         ]);
+        //Buscar si la ruta existe
+        $route  = Rutas::findOrFail($idRoute);
+        if( !$route) {
+            return response()->json([
+                'error' => 'Ruta no encontrada'
+            ], 404);
+        }
+
         //Capturar el error si ocurre
         try {
             $stops= new PuntosEntrega();
-            $stops->IDRUTAS= $request->input('IDRUTAS');
+            $stops->IDRUTAS= $route->IDRUTAS;
             $stops->DIRECCION= $request->input('DIRECCION');
             $stops->ORDEN= $request->input('ORDEN');
             $stops->ENTREGADO= $request->input('ENTREGADO');

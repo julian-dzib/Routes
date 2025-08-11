@@ -27,7 +27,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function () {
 });
 //Rutas para el controlador Puntos de Entrega
 Route::group(['namespace' => 'App\Http\Controllers'], function () {
-    Route::post('/stops', 'RutEntregaController@store');
+    Route::post('/routes/{id}/stops', 'RutEntregaController@store');
     Route::delete('/stops/{id}','RutEntregaController@destroy');
     Route::put('/stops/{id}','RutEntregaController@update');
 });
