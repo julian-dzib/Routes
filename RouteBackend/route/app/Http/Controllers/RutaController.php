@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Choferes;
-
-
-class ChoferController extends Controller
+use App\Models\Rutas;
+use Route;
+class RutaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,16 +14,16 @@ class ChoferController extends Controller
     {
         //
         try {
-            $drivers= Choferes::all();
+            $routes= Rutas::all();
             //Retornar un mensaje json
             return response()->json([
-                'message' => 'Lista de choferes',
-                'data' => $drivers
+                'message' => 'Lista de rutas disponiblesq',
+                'data' => $routes
             ]);
         } catch (\Exception $e) {
             // Retornar un mensaje de error
             return response()->json([
-                'error' => 'Error al obtener la lista de los choferes'
+                'error' => 'Error al obtener las rutas'
             ], 500);
         }
     }
@@ -42,39 +41,53 @@ class ChoferController extends Controller
      */
     public function store(Request $request)
     {
+        //
         //Validar los datos de entrada
         $request->validate([
             "NOMBRE" => "required|string|max:100",
-            "TELEFONO" => "string",
+            "FECHA" => "date",
+            "IDCHOFER" => "required|integer|exists:choferes,IDCHOFER",
         ]);
         //Capturar el error si ocurre
         try {
-            $drivers= new Choferes();
-            $drivers->NOMBRE= $request->input('NOMBRE');
-            $drivers->TELEFONO= $request->input('TELEFONO');
-            $drivers->save();
+            $routes= new Rutas();
+            $routes->NOMBRE= $request->input('NOMBRE');
+            $routes->FECHA= $request->input('FECHA');
+            $routes->IDCHOFER= $request->input('IDCHOFER');
+            $routes->save();
 
             //Retornar un mensaje json
             return response()->json([
-                'message' => 'El chofer ha sido creado',
-                'data' => $drivers
+                'message' => 'El RUTA ha sido creado',
+                'data' => $routes
             ], 201);
         } catch (\Exception $e) {
             // Retornar un mensaje de error
             return response()->json([
-                'error' => 'Error al crear el chofer'
+                'error' => 'Error al crear el ruta, verifique que los datos sean correctos'
             ], 500);
         }
-
-
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        //Buscar una ruta por ID
+        //Traer el elemento especifico
+        $routes = Rutas::where('IDRUTAS', $id)->first();
+
+        if (!$routes) {
+            return response()->json([
+                'error' => 'La ruta no fue encontrada, verifique que la ruta exista'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Ruta Encontrada',
+            'data' => $routes
+        ]);
     }
 
     /**
@@ -91,28 +104,27 @@ class ChoferController extends Controller
     public function update(Request $request, $id)
     {
         //
-        //Controlar el error si ocurre
         try {
-            $drivers = Choferes::find($id);
+            $routes = Rutas::find($id);
             // Validar los datos de entrada nuevamene
             $request->validate([
-                "NOMBRE" => "required|string|max:100",
-                "TELEFONO" => "string",
+            "NOMBRE" => "required|string|max:100",
+            "FECHA" => "date",
+            "IDCHOFER" => "required|integer|exists:choferes,IDCHOFER",
             ]);
 
-            $drivers->NOMBRE = $request->input('NOMBRE');
-            $drivers->TELEFONO = $request->input('TELEFONO');
-            $drivers->save();
+            $routes->NOMBRE= $request->input('NOMBRE');
+            $routes->FECHA= $request->input('FECHA');
+            $routes->IDCHOFER= $request->input('IDCHOFER');
+            $routes->save();
             return response()->json([
-                'message' => 'El chofer ha sido actualizado',
-                'data' => $drivers
+                'message' => 'La Ruta Ha sido actualizada',
+                'data' => $routes
             ], 200);
-
-
         }catch (\Exception $e) {
             // Retornar un mensaje de error
             return response()->json([
-                'error' => 'Error al actualizar el chofer, porfavor verifique que exista el registro'
+                'error' => 'Error al actualizar la ruta, porfavor verifique que exista la ruta'
             ], 500);
         }
     }
@@ -122,22 +134,23 @@ class ChoferController extends Controller
      */
     public function destroy($id)
     {
+        //
         //Capturar el error si ocurre
         try {
-            $drivers = Choferes::find($id);
-            if (!$drivers) {
+            $routes = Rutas::find($id);
+            if (!$routes) {
                 return response()->json([
-                    'error' => 'No se pudo eliminar el chofer, porfavor verifque que exista'
+                    'error' => 'No se pudo eliminar la ruta, porfavor verifque que exista'
                 ], 404);
             }
-            $drivers->delete();
+            $routes->delete();
             return response()->json([
-                'message' => 'El chofer ha sido eliminado'
+                'message' => 'La ruta ha sido eliminado'
             ], 200);
         } catch (\Exception $e) {
             // Retornar un mensaje de error
             return response()->json([
-                'error' => 'Error al eliminar el chofer, verfique de nuevo'
+                'error' => 'Error al eliminar la ruta, verfique de nuevo'
             ], 500);
         }
     }
