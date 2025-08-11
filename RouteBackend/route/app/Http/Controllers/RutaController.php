@@ -14,7 +14,9 @@ class RutaController extends Controller
     {
         //
         try {
-            $routes= Rutas::all();
+            //$routes= Rutas::all();
+            //Con base a la relaccion devuelvo los datos del chofer
+            $routes=Rutas::with('chofer')->get();
             //Retornar un mensaje json
             return response()->json([
                 'message' => 'Lista de rutas disponiblesq',

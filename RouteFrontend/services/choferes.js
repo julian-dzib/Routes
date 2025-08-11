@@ -28,9 +28,9 @@ async function createDrivers(nombre, telefono) {
 }
 
 // PUT: Actualizar chofer
-async function updateDrivers(IDCHOFER, nombre, telefono) {
+async function updateDrivers(id, nombre, telefono) {
     try {
-        const response = await fetch(`${API_URL}/${IDCHOFER}`, {
+        const response = await fetch(`${API_URL}/${id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ NOMBRE: nombre, TELEFONO: telefono })
@@ -46,7 +46,8 @@ async function updateDrivers(IDCHOFER, nombre, telefono) {
 async function deleteDrivers(IDCHOFER) {
     if (!confirm("¿Seguro que deseas eliminar este chofer?")) return;
     try {
-        const response = await fetch(`${API_URL}/${IDCHOFER}`, { method: "DELETE" });
+        const response = await fetch(`${API_URL}/${IDCHOFER}`, { 
+            method: "DELETE" });
         if (!response.ok) throw new Error(`Status: ${response.status}`);
         getDrivers();
     } catch (error) {
@@ -57,7 +58,7 @@ async function deleteDrivers(IDCHOFER) {
 
 
 // Llenar formulario para editar
-function updateDrivers(id, nombre, telefono) {
+function completeDataDrivers(id, nombre, telefono) {
     document.getElementById("chofer-id").value = id;
     document.getElementById("chofer-nombre").value = nombre;
     document.getElementById("chofer-telefono").value = telefono;
@@ -67,7 +68,7 @@ function updateDrivers(id, nombre, telefono) {
 
 // Renderizar tabla de choferes y formulario
 function renderList(data) {
-    const container = document.getElementById("data-container");
+    const container = document.getElementById("drivers-container");
     if (!container) return;
     let html = `
         <h2>Gestionar Choferes</h2>
@@ -99,7 +100,7 @@ function renderList(data) {
                 <td>${item.NOMBRE}</td>
                 <td>${item.TELEFONO}</td>
                 <td>
-                    <button class="btn btn-sm btn-warning" onclick="updateDrivers(${item.IDCHOFER}, '${item.NOMBRE}', '${item.TELEFONO}')">Editar</button>
+                    <button class="btn btn-sm btn-warning" onclick="completeDataDrivers(${item.IDCHOFER}, '${item.NOMBRE}', '${item.TELEFONO}')">Editar</button>    
                     <button class="btn btn-sm btn-danger" onclick="deleteDrivers(${item.IDCHOFER})">Eliminar</button>
                 </td>
             </tr>
@@ -111,7 +112,7 @@ function renderList(data) {
     `;
     container.innerHTML = html;
 
-    // Manejar el formulario
+    // formulario
     document.getElementById("chofer-form").onsubmit = function(e) {
         e.preventDefault();
         const id = document.getElementById("chofer-id").value;

@@ -1,49 +1,47 @@
-async function listRutas() {
-    const url = "http://127.0.0.1:8000/api/routes";
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
-        }
+const RUTAS_API_URL = "http://127.0.0.1:8000/api/routes";
 
-    const result = await response.json();
-    renderTable(result.data); 
+// GET: Listar rutas
+async function getRoutes() {
+    try {
+        const response = await fetch(RUTAS_API_URL);
+        if (!response.ok) throw new Error(`Status: ${response.status}`);
+        const result = await response.json();
+        renderRoutes(result.data);
     } catch (error) {
-        console.error(error.message);
+        alert(error.message);
     }
 }
 
-//Boostrap para mostrar los datos en una tabla
-function renderTable(data) {
-    const container = document.getElementById("data-container");
+function renderRoutes(data) {
+    const container = document.getElementById("route-container");
     if (!container) return;
-        let html = `
+    let html = `
+        <h2>Listar Rutas</h2>
         <table class="table table-striped">
             <thead>
                 <tr>
-                <th>NOMBRE</th>
-                <th>FECHA</th>
+                    <th>NOMBRE</th>
+                    <th>FECHA</th>
+                    <th>NOMBRE DEL CHOFER</th>
                 </tr>
             </thead>
             <tbody>
-        `;
-
-    data.forEach((item) => {
+    `;
+    data.forEach(item => {
         html += `
-        <tr>
-            <td>${item.NOMBRE}</td>
-            <td>${item.FECHA}</td>
-        </tr>
+            <tr>
+                <td>${item.NOMBRE}</td>
+                <td>${new Date(item.FECHA).toLocaleDateString()}</td>
+                <td>${item.chofer ? item.chofer.NOMBRE : 'No se ha asignando ningun chofer'}</td>
+            </tr>
         `;
     });
-
     html += `
-        </tbody>
+            </tbody>
         </table>
     `;
-
     container.innerHTML = html;
 }
 
-//LLamar a mi func
-window.onload = getData;
+// Mostrar rutas al cargar
+window.addEventListener('DOMContentLoaded', getRoutes);
