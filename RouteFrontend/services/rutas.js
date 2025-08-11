@@ -12,10 +12,42 @@ async function getRoutes() {
     }
 }
 
+//METODO POST - CREAR CHOFER
+async function createRoutes(nombre, fecha, idChofer) {
+    try {
+        const response = await fetch(RUTAS_API_URL, { 
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ NOMBRE: nombre, FECHA: fecha, IDCHOFER: idChofer })
+        });
+        if (!response.ok) throw new Error(`Status: ${response.status}`);
+        getRoutes();
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
 function renderRoutes(data) {
     const container = document.getElementById("route-container");
     if (!container) return;
     let html = `
+        <h2>Agregar una Nueva Ruta</h2> 
+        <form id="route-form" class="row g-3 mb-4">
+                <input type="hidden" id="route-id">
+                <div class="col-md-5">
+                    <input type="text" class="form-control" id="route-nombre" placeholder="Nombre de la ruta" required>
+                </div>
+                <div class="col-md-5">
+                    <input type="text" class="form-control" id="route-fecha" placeholder="Fecha" required>
+                </div>
+                <div class="col-md-5">
+                    <input type="text" class="form-control" id="route-idChofer" placeholder="Id Chofer" required>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-sm btn-success" id="route-submit">Agregar Registro</button>
+                </div>
+        </form></h2>
+
         <h2>Listar Rutas</h2>
         <table class="table table-striped">
             <thead>
@@ -41,6 +73,16 @@ function renderRoutes(data) {
         </table>
     `;
     container.innerHTML = html;
+    // formulario
+    document.getElementById("route-form").onsubmit = function(e) {
+        e.preventDefault();
+        const nombre = document.getElementById("route-nombre").value;
+        const date = document.getElementById("route-fecha").value;
+        const idChofer = document.getElementById("route-idChofer").value;
+        createRoutes(nombre, date, idChofer );
+        this.reset();
+        document.getElementById("route-submit").textContent = "Agregar Registro";
+    };
 }
 
 // Mostrar rutas al cargar

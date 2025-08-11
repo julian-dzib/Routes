@@ -87,6 +87,7 @@ function renderList(data) {
         <table class="table table-striped">
             <thead>
                 <tr>
+                    <th>Id</th>
                     <th>Nombre</th>
                     <th>Telefono</th>
                     <th>Acciones</th>
@@ -97,6 +98,7 @@ function renderList(data) {
     data.forEach(item => {
         html += `
             <tr>
+                <td>${item.IDCHOFER}</td>
                 <td>${item.NOMBRE}</td>
                 <td>${item.TELEFONO}</td>
                 <td>
