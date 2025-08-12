@@ -65,6 +65,20 @@ function completeDataDrivers(id, nombre, telefono) {
     document.getElementById("chofer-submit").textContent = "Actualizar Registro";
 }
 
+//Metodo para obtener el ID del chofer y pasarlo al formulario de rutas
+function obtenerIDChofer(idChofer) {
+    localStorage.setItem('choferSeleccionado', idChofer);
+    const rutasTab = document.querySelector('#rutas-tab');
+    if (rutasTab) rutasTab.click();
+    setTimeout(() => {
+        const input = document.getElementById('route-idChofer');
+        if (input) {
+            input.value = idChofer;
+            input.readOnly = true; 
+        }
+    }, 300);
+}
+
 
 // Renderizar tabla de choferes y formulario
 function renderList(data) {
@@ -104,6 +118,7 @@ function renderList(data) {
                 <td>
                     <button class="btn btn-sm btn-warning" onclick="completeDataDrivers(${item.IDCHOFER}, '${item.NOMBRE}', '${item.TELEFONO}')">Editar</button>    
                     <button class="btn btn-sm btn-danger" onclick="deleteDrivers(${item.IDCHOFER})">Eliminar</button>
+                    <button class="btn btn-sm btn-primary" onclick="obtenerIDChofer(${item.IDCHOFER})">Agregar Ruta</button>
                 </td>
             </tr>
         `;

@@ -12,7 +12,35 @@ async function getRoutes() {
     }
 }
 
-//METODO POST - CREAR CHOFER
+//METODO PUT - ACTUALIZR UN REGISTRO
+async function deleteRoutes(IDRUTAS) {
+    if (!confirm("¿Seguro que deseas eliminar este ruta?")) return;
+    try {
+        const response = await fetch(`${RUTAS_API_URL}/${IDRUTAS}`, { 
+            method: "DELETE" });
+        if (!response.ok) throw new Error(`Status: ${response.status}`);
+        getRoutes();
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+// PUT: Actualizar chofer
+/*async function updateRoutes(id, nombre, fecha, idChofer) {
+    try {
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ NOMBRE: nombre, TELEFONO: telefono, FECHA: fecha, IDCHOFER: idChofer})
+        });
+        if (!response.ok) throw new Error(`Status: ${response.status}`);
+        getDrivers();
+    } catch (error) {
+        alert(error.message);
+    }
+}*/
+
+//METODO POST - CREAR ROUTES
 async function createRoutes(nombre, fecha, idChofer) {
     try {
         const response = await fetch(RUTAS_API_URL, { 
@@ -26,6 +54,16 @@ async function createRoutes(nombre, fecha, idChofer) {
         alert(error.message);
     }
 }
+
+// Llenar formulario para editar
+/*function completeDataDrivers(id, nombre, fecha, idChofer) {
+    document.getElementById("route-id").value = id;
+    document.getElementById("route-nombre").value = nombre;
+    document.getElementById("route-fecha").value = fecha;
+    document.getElementById("route-idChofer").value = idChofer;
+    document.getElementById("route-submit").textContent = "Actualizar Registro";
+}*/
+
 
 function renderRoutes(data) {
     const container = document.getElementById("route-container");
@@ -55,6 +93,8 @@ function renderRoutes(data) {
                     <th>NOMBRE</th>
                     <th>FECHA</th>
                     <th>NOMBRE DEL CHOFER</th>
+                    <th>Acciones</th>
+
                 </tr>
             </thead>
             <tbody>
@@ -65,6 +105,12 @@ function renderRoutes(data) {
                 <td>${item.NOMBRE}</td>
                 <td>${new Date(item.FECHA).toLocaleDateString()}</td>
                 <td>${item.chofer ? item.chofer.NOMBRE : 'No se ha asignando ningun chofer'}</td>
+
+                <td>
+                    <button class="btn btn-sm btn-danger" onclick="deleteRoutes(${item.IDRUTAS})">Eliminar</button>
+                </td>
+
+
             </tr>
         `;
     });
