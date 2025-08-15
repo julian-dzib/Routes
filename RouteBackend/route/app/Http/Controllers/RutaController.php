@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Rutas;
 use Route;
+use Illuminate\Validation\ValidationException;
 class RutaController extends Controller
 {
     /**
@@ -44,14 +45,25 @@ class RutaController extends Controller
     public function store(Request $request)
     {
         //
-        //Validar los datos de entrada
-        $request->validate([
-            "NOMBRE" => "required|string|max:100",
-            "FECHA" => "date",
-            "IDCHOFER" => "required|integer|exists:choferes,IDCHOFER",
-        ]);
         //Capturar el error si ocurre
         try {
+            //Validar los datos de entrada
+            $request->validate([
+                "NOMBRE" => "required|string|max:100",
+                "FECHA" => [
+                    "required",
+                    "date",
+                    "regex:/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/"
+                ],
+                "IDCHOFER" => "required|integer|exists:choferes,IDCHOFER",
+            ],[
+                "NOMBRE.required"=>"El campo nombre es obligatorio",
+                "FECHA.required"=> "El campo fecha es obligatorio",
+                "IDCHOFER.required"=> "Debes asignar un chofer a una ruta",
+                "IDCHOFER.exists"=> "El chofer asignado no existe",
+                "FECHA.regex" =>"El formato de fecha debe ser AÑO-MES-DIA"
+            ]
+            );
             $routes= new Rutas();
             $routes->NOMBRE= $request->input('NOMBRE');
             $routes->FECHA= $request->input('FECHA');
@@ -63,6 +75,12 @@ class RutaController extends Controller
                 'message' => 'El RUTA ha sido creado',
                 'data' => $routes
             ], 201);
+
+        }catch (ValidationException $e) {
+        return response()->json([
+            'errors' => $e->errors()
+        ], 422);
+
         } catch (\Exception $e) {
             // Retornar un mensaje de error
             return response()->json([
@@ -109,11 +127,23 @@ class RutaController extends Controller
         try {
             $routes = Rutas::find($id);
             // Validar los datos de entrada nuevamene
+                        //Validar los datos de entrada
             $request->validate([
-            "NOMBRE" => "required|string|max:100",
-            "FECHA" => "date",
-            "IDCHOFER" => "required|integer|exists:choferes,IDCHOFER",
-            ]);
+                "NOMBRE" => "required|string|max:100",
+                "FECHA" => [
+                    "required",
+                    "date",
+                    "regex:/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/"
+                ],
+                "IDCHOFER" => "required|integer|exists:choferes,IDCHOFER",
+            ],[
+                "NOMBRE.required"=>"El campo nombre es obligatorio",
+                "FECHA.required"=> "El campo fecha es obligatorio",
+                "IDCHOFER.required"=> "Debes asignar un chofer a una ruta",
+                "IDCHOFER.exists"=> "El chofer asignado no existe",
+                "FECHA.regex" =>"El formato de fecha debe ser AÑO-MES-DIA"
+            ]
+            );
 
             $routes->NOMBRE= $request->input('NOMBRE');
             $routes->FECHA= $request->input('FECHA');
@@ -123,6 +153,12 @@ class RutaController extends Controller
                 'message' => 'La Ruta Ha sido actualizada',
                 'data' => $routes
             ], 200);
+
+        }catch (ValidationException $e) {
+        return response()->json([
+            'errors' => $e->errors()
+        ], 422);
+
         }catch (\Exception $e) {
             // Retornar un mensaje de error
             return response()->json([
