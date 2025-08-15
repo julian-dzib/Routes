@@ -3,6 +3,23 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChoferController;
+use App\Http\Controllers\AuthController;
+
+//Paso 5 - Crear las rutas para mi autentificacion
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login',[AuthController::class,'login']);
+
+
+Route::middleware(['auth:api'])->group(function () {
+    Route::post('logout', [AuthController::class,'logout']);
+    Route::get('perfil', [AuthController::class,'perfil']);
+});
+
+//Paso 6 - Crear las rutas para recuperar la contrasenia
+//Route::post('passoword/forgot', [AuthController::class,'sendResetLink']);
+//Route::post('password/reset', [AuthController::class, 'reset']);
+
+
 
 
 Route::get('/user', function (Request $request) {

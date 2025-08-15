@@ -35,10 +35,19 @@ return [
     |
     */
 
+    //Paso 4 - Configurar los guards, para que Laravel pueda identificar los diferentes tipos de autenticación
+    // que se pueden utilizar en la aplicación, como web y api.
+    // En este caso, se está configurando el guard 'web' para usar sesiones y el guard 'api' para usar Sanctum.
+    // Esto permite que Laravel maneje la autenticación de usuarios tanto a través de sesiones web como de tokens API.
     'guards' => [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
+        ],
+        'api' => [
+            'driver' => 'sanctum',
+            'provider' => 'users',
+            'hash' => true,
         ],
     ],
 
